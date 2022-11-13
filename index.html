@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="modalCreate" class="modal" onclick="modalToggle('modalCreate')">
+  <div class="modal__body" onclick="event.stopPropagation()">
+    <form id="form" onsubmit="createNewCat(event)">
+      <label>
+        ID
+        <input id="id" value="" onchange="newCat = {...newCat, id: event.target.value}" type="text" name="id">
+      </label>
+      <label>
+        Возраст
+        <input type="text" id="age" name="age" onchange="newCat = {...newCat, age: event.target.value}">
+      </label>
+      <label>
+        Имя
+        <input type="text" id="name" name="name" onchange="newCat = {...newCat, name: event.target.value}">
+      </label>
+      <label>
+        Оценка
+        <input type="text" id="rate" name="rate" onchange="newCat = {...newCat, rate: event.target.value}">
+      </label>
+      <label>
+        Описание
+        <input type="text"
+               id="description"
+               name="description"
+               onchange="newCat = {...newCat, description: event.target.value}">
+      </label>
+      <label>
+        Любимый?
+        <input type="checkbox"
+               id="favourite"
+               name="favourite"
+               onchange="newCat = {...newCat, favourite: event.target.checked}">
+      </label>
+      <label>
+        Фотка
+        <input type="text" id="img_link" name="img_link" onchange="newCat = {...newCat, img_link: event.target.value}">
+      </label>
+      <button>Создать</button>
+    </form>
+  </div>
+</div>
+<div id="modalEdit" onclick="modalToggle('modalEdit')" class="modal"></div>
+<div id="modalPreview" onclick="modalToggle('modalPreview')" class="modal"></div>
+<div id="cats" class="cats">
+  <div class="newCat" onclick="modalToggle('modalCreate')">
+    Добавить котика
+  </div>
+</div>
+</body>
+<script src="jotaro.js"></script>
+<script>
+  let nullnull = false;
+  let newCat = {
+    id: 0,
+    name: '',
+    age: 0,
+    favourite: false,
+    img_link: '',
+    description: '',
+    rate: 0
+  };
+  const editData = {};
+
+
+  let catsArr = [];
+  const modalToggle = (modal) => {
+    const $modal = document.getElementById(modal);
+    console.log(modal);
+    $modal.classList.toggle('active');
+    document.body.style.overflow = document.body.style.overflow === 'hidden' ? 'auto' : 'hidden';
+    if (document.querySelector('#modalEdit .modal__body')) document.querySelector('#modalEdit .modal__body').remove();
+  };
+  let dataToUpd = {};
+
+  fetchCats();
+
+  const previewHandler = (id) => {
+    modalToggle('modalPreview');
+    const cat = catsArr.filter(c => c.id === id)[0];
+    console.log(cat);
+    if (document.querySelector('#modalPreview .modal__body')) document.querySelector('#modalPreview .modal__body').remove();
+    modalPreview.insertAdjacentHTML('beforeend', `
+    <div class="modal__body" style="" onclick="event.stopPropagation()">
+    ${genDiv(cat)}
+    </div>
+    `);
+  };
+</script>
+</html>
