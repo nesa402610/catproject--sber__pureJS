@@ -1,3 +1,4 @@
+//генератор дива кота
 const genDiv = (c) => {
   return `
 <div class="cat" data-id=${c.id} onclick="previewHandler(${c.id})">
@@ -10,7 +11,7 @@ const genDiv = (c) => {
     <span>Возраст: ${c.age}</span>
   </div>
   <div class="cat__photo">
-    <img src=${c.img_link}>
+    <img src=${c.img_link} alt='фото котика'>
   </div>
   <div class="cat__footer">
     <div class="cat__desc">
@@ -26,10 +27,11 @@ const genDiv = (c) => {
 </div>
 `;
 };
-
+//создаем котика
 const createNewCat = (e) => {
+  //шоб не обновлялась страница
   e.preventDefault();
-
+  //кидаем на сервер данные
   fetch('http://sb-cats.herokuapp.com/api/2/nesa402610/add', {
     method: 'POST',
     headers: {
@@ -45,6 +47,7 @@ const createNewCat = (e) => {
       modalCreate.classList.replace('active', '');
     });
 };
+//обновляем кота
 const updateCat = (e) => {
   e.preventDefault();
   fetch('http://sb-cats.herokuapp.com/api/2/nesa402610/update/' + dataToUpd.id, {
@@ -54,12 +57,12 @@ const updateCat = (e) => {
     },
     body: JSON.stringify(dataToUpd)
   })
-    .then((r) => {
+    .then(() => {
       modalEdit.classList.toggle('active');
     });
 
 };
-
+//забираем котов с сервера
 const fetchCats = () => {
   fetch('http://sb-cats.herokuapp.com/api/2/nesa402610/show')
     .then(r => r.json())
@@ -69,7 +72,7 @@ const fetchCats = () => {
       cats.insertAdjacentHTML('beforeend', divs);
     });
 };
-
+//удаляем кота
 const deleteCat = (e, id) => {
   e.target.parentElement.parentElement.remove();
   fetch('http://sb-cats.herokuapp.com/api/2/nesa402610/delete/' + id, {
@@ -77,7 +80,7 @@ const deleteCat = (e, id) => {
   });
 
 };
-
+//тоглим модалку на редактирование
 const editCatHandler = (id) => {
   modalToggle('modalEdit');
   const cat = catsArr.filter(c => c.id === id)[0];
@@ -117,5 +120,4 @@ const editCatHandler = (id) => {
     </form>
     </div>
     `);
-
 };

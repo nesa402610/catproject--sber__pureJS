@@ -11,10 +11,10 @@
 <body>
 <div id="modalCreate" class="modal" onclick="modalToggle('modalCreate')">
   <div class="modal__body" onclick="event.stopPropagation()">
-    <form id="form" onsubmit="createNewCat(event)">
+    <form id="form" onchange="setStore()" onsubmit="createNewCat(event)">
       <label>
         ID
-        <input id="id" value="" onchange="newCat = {...newCat, id: event.target.value}" type="text" name="id">
+        <input id="id" onchange="newCat = {...newCat, id: event.target.value}" type="text" name="id">
       </label>
       <label>
         Возраст
@@ -60,41 +60,61 @@
 </body>
 <script src="jotaro.js"></script>
 <script>
+
   let nullnull = false;
   let newCat = {
-    id: 0,
+    id: '',
     name: '',
-    age: 0,
+    age: '',
     favourite: false,
     img_link: '',
     description: '',
-    rate: 0
+    rate: ''
   };
   const editData = {};
-
-
+  //чекаем, есть ли вообще локал сторага
+  if (localStorage.getItem('modalData')) {
+    //парсим в нового кота данные оттдуа
+    newCat = JSON.parse(localStorage.getItem('modalData'));
+    //собираем инпуты из формы
+    const formInputs = form.getElementsByTagName('input');
+    //циклом цепляем ключи объекта
+    for (const key in newCat) {
+      //по ключам раскидываем данные из объекта в инпуты
+      formInputs[key].value = newCat[key];
+      console.log(formInputs[key], newCat[key], key);
+    }
+  }
+  //масси в котов. все коты тут
   let catsArr = [];
+  //тоглим модалку по названию
   const modalToggle = (modal) => {
     const $modal = document.getElementById(modal);
     console.log(modal);
     $modal.classList.toggle('active');
     document.body.style.overflow = document.body.style.overflow === 'hidden' ? 'auto' : 'hidden';
+    //Тк я дебил и добавляю, то удаляем старую
     if (document.querySelector('#modalEdit .modal__body')) document.querySelector('#modalEdit .modal__body').remove();
   };
   let dataToUpd = {};
-
+//фетч котов с сервера
   fetchCats();
-
+//открываем подалку превью
   const previewHandler = (id) => {
     modalToggle('modalPreview');
+    //фильтрурем котов, чтобы был только нужный
     const cat = catsArr.filter(c => c.id === id)[0];
-    console.log(cat);
+    //так же удаляем старую модалку
     if (document.querySelector('#modalPreview .modal__body')) document.querySelector('#modalPreview .modal__body').remove();
     modalPreview.insertAdjacentHTML('beforeend', `
     <div class="modal__body" style="" onclick="event.stopPropagation()">
     ${genDiv(cat)}
     </div>
     `);
+  };
+  //данные в локал стор кидаем
+  const setStore = () => {
+    localStorage.setItem('modalData', JSON.stringify(newCat));
   };
 </script>
 </html>
